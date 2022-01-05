@@ -2,7 +2,6 @@ package br.sales.estante.dto;
 
 import br.sales.estante.model.Country;
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotNull;
 

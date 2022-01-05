@@ -22,6 +22,6 @@ public class Publisher extends PanacheEntity {
     private LocalDate date;
     @Enumerated(EnumType.STRING)
     private Country country;
-    @OneToMany(mappedBy = "originalPublisher", orphanRemoval = true)
-    private List<Book> books;
+//    @OneToMany(mappedBy = "originalPublisher", orphanRemoval = true)
+//    private List<Book> books;
 }
