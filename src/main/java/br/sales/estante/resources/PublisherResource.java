@@ -24,8 +24,6 @@ public class PublisherResource {
 
         var publisher = this.business.create(publisherDto);
 
-        var uri = uriInfo.getAbsolutePathBuilder().path("/v1/publisher").build(publisher);
-
         return Response.ok(publisher).status(Response.Status.CREATED).build();
     }
 
@@ -34,12 +32,13 @@ public class PublisherResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPublisherById(@PathParam("id") Long id) {
 
-        var publisher = this.business.getById(id);
-        if (Objects.isNull(publisher)) {
+        var optionalPublisher = this.business.getById(id);
+        if (optionalPublisher.isEmpty()) {
             throw new NotFoundException("Não foi possível encontrar a editora");
         }
-        return Response.ok(publisher).build();
+        return Response.ok(optionalPublisher.get()).build();
     }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response ListAll() {
@@ -57,7 +56,7 @@ public class PublisherResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("id") Long id, final PublisherDto publisherDto) {
 
-        if (Objects.isNull(publisherDto.getName()) && publisherDto.getName().isEmpty()) {
+        if (Objects.isNull(publisherDto.getName()) || publisherDto.getName().isEmpty()) {
             return Response.ok("Nome inválido").status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
 

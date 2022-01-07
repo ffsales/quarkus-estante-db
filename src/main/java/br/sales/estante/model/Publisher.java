@@ -6,9 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Data
@@ -22,6 +24,4 @@ public class Publisher extends PanacheEntity {
     private LocalDate date;
     @Enumerated(EnumType.STRING)
     private Country country;
-//    @OneToMany(mappedBy = "originalPublisher", orphanRemoval = true)
-//    private List<Book> books;
 }

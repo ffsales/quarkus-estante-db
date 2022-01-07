@@ -6,8 +6,10 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import javax.ws.rs.NotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class PublisherBusiness {
@@ -32,20 +34,18 @@ public class PublisherBusiness {
     }
 
     @Transactional
-    public Publisher getById(Long id) {
-
-        return Publisher.findById(id);
+    public Optional<Publisher> getById(Long id) {
+        return Optional.ofNullable(Publisher.findById(id));
     }
 
     @Transactional
     public Publisher update(Long id, PublisherDto publisherDto) {
-
-        var publisher = getById(id);
-
-        if (publisher == null) {
-            throw  new IllegalArgumentException("Editora não encontrada");
+        var optPublisher = getById(id);
+        if (optPublisher.isEmpty()) {
+            throw  new NotFoundException("Editora não encontrada");
         }
 
+        var publisher = optPublisher.get();
         publisher.setCountry(publisherDto.getCountry());
         publisher.setName(publisherDto.getName());
         publisher.setDate(LocalDate.now());
@@ -59,8 +59,12 @@ public class PublisherBusiness {
     public void delete(Long id) {
         //TODO criar regra
 
-        var publisher = getById(id);
+        var optPublisher = getById(id);
 
+        if (optPublisher.isEmpty()) {
+            throw new NotFoundException("Editora não encontrada");
+        }
+        var publisher = optPublisher.get();
         publisher.delete();
     }
 }
