@@ -1,6 +1,8 @@
 package br.sales.estante.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,8 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Artist extends PanacheEntity {
 
