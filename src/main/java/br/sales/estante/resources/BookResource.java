@@ -76,7 +76,7 @@ public class BookResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "API que atualiza um livro")
+    @Operation(description = "API que deleta um livro")
     @APIResponses(value = {
             @APIResponse(description = "Retorna 204 para sucesso", responseCode = "204"),
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
