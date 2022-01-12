@@ -1,7 +1,7 @@
 package br.sales.estante.resources;
 
 import br.sales.estante.business.PublisherBusiness;
-import br.sales.estante.dto.PublisherDto;
+import br.sales.estante.dto.PublisherRequest;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -20,9 +20,9 @@ public class PublisherResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response savePublisher(@Context UriInfo uriInfo, final PublisherDto publisherDto) {
+    public Response savePublisher(@Context UriInfo uriInfo, final PublisherRequest publisherRequest) {
 
-        var publisher = this.business.create(publisherDto);
+        var publisher = this.business.create(publisherRequest);
 
         return Response.ok(publisher).status(Response.Status.CREATED).build();
     }
@@ -31,18 +31,13 @@ public class PublisherResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPublisherById(@PathParam("id") Long id) {
-
-        var optionalPublisher = this.business.getById(id);
-        if (optionalPublisher.isEmpty()) {
-            throw new NotFoundException("Não foi possível encontrar a editora");
-        }
-        return Response.ok(optionalPublisher.get()).build();
+        var publisher = this.business.getById(id);
+        return Response.ok(publisher).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response ListAll() {
-
         var publishers = this.business.listAll();
         if (Objects.isNull(publishers)) {
             throw new NotFoundException("Não foi possível encontrar a editora");
@@ -54,18 +49,14 @@ public class PublisherResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, final PublisherDto publisherDto) {
-
-        if (Objects.isNull(publisherDto.getName()) || publisherDto.getName().isEmpty()) {
+    public Response update(@PathParam("id") Long id, final PublisherRequest publisherRequest) {
+        if (Objects.isNull(publisherRequest.getName()) || publisherRequest.getName().isEmpty()) {
             return Response.ok("Nome inválido").status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
-
-        if (Objects.isNull(publisherDto.getCountry())) {
+        if (Objects.isNull(publisherRequest.getCountry())) {
             return Response.ok("País inválido").status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).build();
         }
-
-        var publisher = this.business.update(id, publisherDto);
-
+        var publisher = this.business.update(id, publisherRequest);
         return Response.ok(publisher).build();
     }
 
@@ -73,9 +64,7 @@ public class PublisherResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") Long id) {
-
         this.business.delete(id);
-
         return Response.noContent().build();
     }
 }

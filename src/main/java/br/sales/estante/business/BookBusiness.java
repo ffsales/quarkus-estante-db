@@ -96,8 +96,10 @@ public class BookBusiness {
             book.setLicencingPublisher(licencingPublisher);
         }
 
-        book.getArtistsRole().clear();
-        book.getArtistsRole().addAll(buildArtistRoleList(bookRequest.getArtistList()));
+        if (Objects.nonNull(bookRequest.getArtistList()) && !bookRequest.getArtistList().isEmpty()) {
+            book.getArtistsRole().clear();
+            book.getArtistsRole().addAll(buildArtistRoleList(bookRequest.getArtistList()));
+        }
 
         book.setType(bookRequest.getType());
         book.setGenre(bookRequest.getGenre());
@@ -109,8 +111,7 @@ public class BookBusiness {
     }
 
     private Publisher getPublisher(Long id) {
-        var optPublisher = publisherBusiness.getById(id);
-        return optPublisher.orElseThrow(() -> new NotFoundException("Editora com o id " + id + " não encontrada"));
+        return publisherBusiness.getById(id);
     }
 
     private List<ArtistRole> buildArtistRoleList(List<ArtistRoleRequest> artistRoleRequestList) {

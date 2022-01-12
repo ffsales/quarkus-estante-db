@@ -2,11 +2,15 @@ package br.sales.estante.business;
 
 import br.sales.estante.dto.ArtistRequest;
 import br.sales.estante.model.Artist;
+import br.sales.estante.model.ArtistRole;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +52,11 @@ public class ArtistBusiness {
 
     @Transactional
     public void delete(Long id) {
-        //TODO verificar uso do artista em algum relacionamento
         var artist = getById(id);
+        long countRoles = ArtistRole.count("artist", artist);
+        if (countRoles > 0) {
+            throw new WebApplicationException("Artista cadastrado em livro em uso.", Response.Status.CONFLICT);
+        }
         artist.delete();
     }
 }
