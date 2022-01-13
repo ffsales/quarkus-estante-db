@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class PublisherDto {
+public class PublisherRequest {
 
     @NotNull(message = "Nome não pode ser nulo")
     private String name;
