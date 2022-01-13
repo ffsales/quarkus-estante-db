@@ -1,7 +1,7 @@
 package br.sales.estante.resources;
 
 import br.sales.estante.business.PublisherBusiness;
-import br.sales.estante.dto.PublisherDto;
+import br.sales.estante.dto.PublisherRequest;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
@@ -30,10 +30,8 @@ public class PublisherResource {
             @APIResponse(description = "Retorna 201 para sucesso", responseCode = "201"),
             @APIResponse(description = "retorna 400 caso algum parâmetro esteja inválido", responseCode = "400")
     })
-    public Response savePublisher(@Context UriInfo uriInfo, final PublisherDto publisherDto) {
-
-        var publisher = this.business.create(publisherDto);
-
+   public Response savePublisher(@Context UriInfo uriInfo, final PublisherRequest publisherRequest) {
+        var publisher = this.business.create(publisherRequest);
         return Response.ok(publisher).status(Response.Status.CREATED).build();
     }
 
@@ -46,12 +44,8 @@ public class PublisherResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response getPublisherById(@PathParam("id") Long id) {
-
-        var optionalPublisher = this.business.getById(id);
-        if (optionalPublisher.isEmpty()) {
-            throw new NotFoundException("Não foi possível encontrar a editora");
-        }
-        return Response.ok(optionalPublisher.get()).build();
+        var publisher = this.business.getById(id);
+        return Response.ok(publisher).build();
     }
 
     @GET
@@ -62,7 +56,6 @@ public class PublisherResource {
             @APIResponse(description = "retorna 404 se não encontrar nenhum", responseCode = "404")
     })
     public Response ListAll() {
-
         var publishers = this.business.listAll();
         if (Objects.isNull(publishers)) {
             throw new NotFoundException("Não foi possível encontrar a editora");
@@ -80,18 +73,8 @@ public class PublisherResource {
             @APIResponse(description = "retorna 400 caso algum parâmetro esteja inválido", responseCode = "400"),
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
-    public Response update(@PathParam("id") Long id, final PublisherDto publisherDto) {
-
-        if (Objects.isNull(publisherDto.getName()) || publisherDto.getName().isEmpty()) {
-            return Response.ok("Nome inválido").status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).build();
-        }
-
-        if (Objects.isNull(publisherDto.getCountry())) {
-            return Response.ok("País inválido").status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).build();
-        }
-
-        var publisher = this.business.update(id, publisherDto);
-
+    public Response update(@PathParam("id") Long id, final PublisherRequest publisherRequest) {
+        var publisher = this.business.update(id, publisherRequest);
         return Response.ok(publisher).build();
     }
 
@@ -104,9 +87,7 @@ public class PublisherResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response delete(@PathParam("id") Long id) {
-
         this.business.delete(id);
-
         return Response.noContent().build();
     }
 }

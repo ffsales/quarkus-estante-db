@@ -1,30 +1,34 @@
 package br.sales.estante.business;
 
-import br.sales.estante.dto.PublisherDto;
+import br.sales.estante.dto.PublisherRequest;
+import br.sales.estante.model.Book;
 import br.sales.estante.model.Publisher;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @ApplicationScoped
 public class PublisherBusiness {
 
     @Transactional
-    public Publisher create(PublisherDto publisherDto) {
-
+    public Publisher create(PublisherRequest publisherRequest) {
+        this.validatePublisherRequest(publisherRequest);
         var publisher = Publisher.builder()
-                                            .name(publisherDto.getName())
-                                            .country(publisherDto.getCountry())
+                                            .name(publisherRequest.getName())
+                                            .country(publisherRequest.getCountry())
                                             .date(LocalDate.now())
                                             .build();
 
         PanacheEntityBase.persist(publisher);
-
         return publisher;
     }
 
@@ -34,37 +38,45 @@ public class PublisherBusiness {
     }
 
     @Transactional
-    public Optional<Publisher> getById(Long id) {
-        return Optional.ofNullable(Publisher.findById(id));
+    public Publisher getById(Long id) {
+        Optional<Publisher> optionalPublisher = Publisher.findByIdOptional(id);
+        if (optionalPublisher.isEmpty()) {
+            throw  new NotFoundException("Editora não encontrada");
+        }
+        return optionalPublisher.get();
     }
 
     @Transactional
-    public Publisher update(Long id, PublisherDto publisherDto) {
-        var optPublisher = getById(id);
-        if (optPublisher.isEmpty()) {
-            throw  new NotFoundException("Editora não encontrada");
-        }
-
-        var publisher = optPublisher.get();
-        publisher.setCountry(publisherDto.getCountry());
-        publisher.setName(publisherDto.getName());
+    public Publisher update(Long id, PublisherRequest publisherRequest) {
+        this.validatePublisherRequest(publisherRequest);
+        var publisher =  getById(id);
+        publisher.setCountry(publisherRequest.getCountry());
+        publisher.setName(publisherRequest.getName());
         publisher.setDate(LocalDate.now());
 
         PanacheEntityBase.persist(publisher);
-
         return publisher;
     }
 
     @Transactional
     public void delete(Long id) {
-        //TODO criar regra
+        var publisher = getById(id);
 
-        var optPublisher = getById(id);
+        var countLicencingPublisher = Book.count("licencingPublisher", publisher);
+        var countOriginalPublisher = Book.count("originalPublisher", publisher);
 
-        if (optPublisher.isEmpty()) {
-            throw new NotFoundException("Editora não encontrada");
+        if( countLicencingPublisher > 0 || countOriginalPublisher > 0) {
+            throw new WebApplicationException("Editora cadastrada em livro em uso", Response.Status.CONFLICT);
         }
-        var publisher = optPublisher.get();
         publisher.delete();
+    }
+
+    private void validatePublisherRequest(PublisherRequest publisherRequest) {
+        if (Objects.isNull(publisherRequest.getName()) || publisherRequest.getName().isEmpty()) {
+            throw new BadRequestException("Nome inválido");
+        }
+        if (Objects.isNull(publisherRequest.getCountry())) {
+            throw new BadRequestException("País inválido");
+        }
     }
 }
