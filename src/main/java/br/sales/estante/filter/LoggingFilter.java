@@ -26,14 +26,12 @@ public class LoggingFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) {
 
         MDC.remove(CORRELATION_ID);
-        MDC.remove(CORRELATION_TIME);
 
         if (request.headers().contains(HEADER_CORRELATION_ID)) {
             MDC.put(CORRELATION_ID, request.getHeader(HEADER_CORRELATION_ID));
         } else {
             MDC.put(CORRELATION_ID, UUID.randomUUID());
         }
-        MDC.put(CORRELATION_TIME, LocalDateTime.now());
 
         LOG.info("Adding correlation and time");
     }

@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -19,6 +20,8 @@ import java.util.Objects;
 @Tag(name = "/v1/publishers", description = "API de editoras")
 public class PublisherResource {
 
+        private static final Logger LOG = Logger.getLogger(PublisherResource.class);
+
     @Inject
     private PublisherBusiness business;
 
@@ -31,7 +34,9 @@ public class PublisherResource {
             @APIResponse(description = "retorna 400 caso algum parâmetro esteja inválido", responseCode = "400")
     })
    public Response savePublisher(@Context UriInfo uriInfo, final PublisherRequest publisherRequest) {
+        LOG.info("[savePublisher] criando editora");
         var publisher = this.business.create(publisherRequest);
+        LOG.info("[savePublisher] editora criada");
         return Response.ok(publisher).status(Response.Status.CREATED).build();
     }
 
@@ -44,7 +49,9 @@ public class PublisherResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response getPublisherById(@PathParam("id") Long id) {
+        LOG.info("[getPublisherById] pesquisando editora com id " + id);
         var publisher = this.business.getById(id);
+        LOG.info("[getPublisherById] editora encontrada");
         return Response.ok(publisher).build();
     }
 
@@ -55,11 +62,10 @@ public class PublisherResource {
             @APIResponse(description = "Retorna 200 para sucesso", responseCode = "200"),
             @APIResponse(description = "retorna 404 se não encontrar nenhum", responseCode = "404")
     })
-    public Response ListAll() {
+    public Response listAll() {
+        LOG.info("[listAll] pesquisando a lista de total de editoras");
         var publishers = this.business.listAll();
-        if (Objects.isNull(publishers)) {
-            throw new NotFoundException("Não foi possível encontrar a editora");
-        }
+        LOG.info("[listAll] " + publishers.size() + " editoras encontradas");
         return Response.ok(publishers).build();
     }
 
@@ -74,7 +80,9 @@ public class PublisherResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response update(@PathParam("id") Long id, final PublisherRequest publisherRequest) {
+        LOG.info("[update] atualizando editora com o id " + id);
         var publisher = this.business.update(id, publisherRequest);
+        LOG.info("[update] editora atualizada");
         return Response.ok(publisher).build();
     }
 
@@ -87,7 +95,9 @@ public class PublisherResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response delete(@PathParam("id") Long id) {
+        LOG.info("[delete] deletando editora");
         this.business.delete(id);
+        LOG.info("[delete] editora deletada");
         return Response.noContent().build();
     }
 }
