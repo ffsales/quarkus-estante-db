@@ -7,11 +7,13 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -19,6 +21,7 @@ public class PublisherBusiness {
 
     @Transactional
     public Publisher create(PublisherRequest publisherRequest) {
+        this.validatePublisherRequest(publisherRequest);
         var publisher = Publisher.builder()
                                             .name(publisherRequest.getName())
                                             .country(publisherRequest.getCountry())
@@ -45,6 +48,7 @@ public class PublisherBusiness {
 
     @Transactional
     public Publisher update(Long id, PublisherRequest publisherRequest) {
+        this.validatePublisherRequest(publisherRequest);
         var publisher =  getById(id);
         publisher.setCountry(publisherRequest.getCountry());
         publisher.setName(publisherRequest.getName());
@@ -65,5 +69,14 @@ public class PublisherBusiness {
             throw new WebApplicationException("Editora cadastrada em livro em uso", Response.Status.CONFLICT);
         }
         publisher.delete();
+    }
+
+    private void validatePublisherRequest(PublisherRequest publisherRequest) {
+        if (Objects.isNull(publisherRequest.getName()) || publisherRequest.getName().isEmpty()) {
+            throw new BadRequestException("Nome inválido");
+        }
+        if (Objects.isNull(publisherRequest.getCountry())) {
+            throw new BadRequestException("País inválido");
+        }
     }
 }

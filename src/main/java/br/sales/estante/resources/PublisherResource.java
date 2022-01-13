@@ -31,9 +31,7 @@ public class PublisherResource {
             @APIResponse(description = "retorna 400 caso algum parâmetro esteja inválido", responseCode = "400")
     })
    public Response savePublisher(@Context UriInfo uriInfo, final PublisherRequest publisherRequest) {
-
         var publisher = this.business.create(publisherRequest);
-
         return Response.ok(publisher).status(Response.Status.CREATED).build();
     }
 
@@ -76,12 +74,6 @@ public class PublisherResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response update(@PathParam("id") Long id, final PublisherRequest publisherRequest) {
-        if (Objects.isNull(publisherRequest.getName()) || publisherRequest.getName().isEmpty()) {
-            return Response.ok("Nome inválido").status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).build();
-        }
-        if (Objects.isNull(publisherRequest.getCountry())) {
-            return Response.ok("País inválido").status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).build();
-        }
         var publisher = this.business.update(id, publisherRequest);
         return Response.ok(publisher).build();
     }
