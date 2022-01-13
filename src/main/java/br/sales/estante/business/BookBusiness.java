@@ -10,6 +10,7 @@ import br.sales.estante.repository.BookRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.LocalDate;
 import java.util.List;
@@ -58,18 +59,27 @@ public class BookBusiness {
                 .title(bookRequest.getTitle())
                 .genre(bookRequest.getGenre())
                 .type(bookRequest.getType())
-                .artistsRole(buildArtistRoleList(bookRequest.getArtistList()))
                 .date(LocalDate.now())
                 .build();
+
+        if (Objects.isNull(bookRequest.getArtistList()) || bookRequest.getArtistList().isEmpty()) {
+            throw new BadRequestException("Artistas não podem ser nulos");
+        } else {
+            book.setArtistsRole(buildArtistRoleList(bookRequest.getArtistList()));
+        }
 
         if (Objects.nonNull(bookRequest.getOriginalPublisherId())) {
             var originalPublisher = this.getPublisher(bookRequest.getOriginalPublisherId());
             book.setOriginalPublisher(originalPublisher);
+        } else {
+            throw new BadRequestException("Editora original não pode ser nula");
         }
 
         if (Objects.nonNull(bookRequest.getLicencingPublisherId())) {
             var licencingPublisher = this.getPublisher(bookRequest.getLicencingPublisherId());
             book.setLicencingPublisher(licencingPublisher);
+        } else {
+            throw new BadRequestException("Editora licenciante não pode ser nula");
         }
 
         book.persist();
