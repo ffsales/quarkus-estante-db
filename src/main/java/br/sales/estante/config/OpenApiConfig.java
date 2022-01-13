@@ -13,6 +13,10 @@ import javax.ws.rs.core.Application;
         version = "1.0.0", contact = @Contact(name = "Felipe Sales",
         email = "felipe.ferreira.sales@gmail",
         url = "https://github.com/ffsales")),
+        tags = {
+            @Tag(name = "/v1/books", description = "Gerenciamento de livros"),
+            @Tag(name = "/v1/publishers", description = "Gerenciamento de editoras"),
+            @Tag(name = "/v1/artists", description = "Gerenciamento de artistas")},
         servers = {@Server(url = "http://localhost:8082")})
 public class OpenApiConfig extends Application {
 }
