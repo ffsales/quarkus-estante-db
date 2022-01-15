@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -17,6 +18,8 @@ import javax.ws.rs.core.UriInfo;
 @Path("/v1/books")
 @Tag(name = "/v1/books", description = "API de livros")
 public class BookResource {
+
+    private static final Logger LOG = Logger.getLogger(BookResource.class);
 
     @Inject
     private BookBusiness bookBusiness;
@@ -30,7 +33,10 @@ public class BookResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response getBookById(@PathParam("id") Long id) {
-        return Response.ok(this.bookBusiness.getById(id)).build();
+        LOG.info("[getBookById] pesquisando book com id " + id);
+        var book = this.bookBusiness.getById(id);
+        LOG.info("[getBookById] livro encontrado");
+        return Response.ok(book).build();
     }
 
     @GET
@@ -40,7 +46,8 @@ public class BookResource {
             @APIResponse(description = "Retorna 200 para sucesso", responseCode = "200"),
             @APIResponse(description = "retorna 404 se não encontrar nenhum", responseCode = "404")
     })
-    public Response ListAll() {
+    public Response listAll() {
+        LOG.info("[listAll] pesquisando a lista de total de livros");
         return Response.ok(this.bookBusiness.listAll()).build();
     }
 
@@ -54,7 +61,9 @@ public class BookResource {
             @APIResponse(description = "retorna 400 caso algum parâmetro esteja inválido", responseCode = "400")
     })
     public Response createBook(@Context UriInfo uriInfo, final BookRequest bookRequest) {
+        LOG.info("[createBook] cadastrando livro");
         var book = bookBusiness.saveBook(bookRequest);
+        LOG.info("[createBook] livro cadastrado");
         return Response.ok(book).status(Response.Status.CREATED).build();
     }
 
@@ -69,7 +78,9 @@ public class BookResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response update(@PathParam("id") Long id, final BookRequest bookRequest) {
+        LOG.info("[update] atualizando livro com id " + id);
         var artist = bookBusiness.update(id, bookRequest);
+        LOG.info("[update] livro atualizado");
         return Response.ok(artist).build();
     }
 
@@ -82,7 +93,9 @@ public class BookResource {
             @APIResponse(description = "retorna 404 se não encontrar", responseCode = "404")
     })
     public Response delete(@PathParam("id") Long id) {
+        LOG.info("[delete] deletando livro com id " + id);
         this.bookBusiness.delete(id);
+        LOG.info("[delete] livro deletado");
         return Response.noContent().build();
     }
 }

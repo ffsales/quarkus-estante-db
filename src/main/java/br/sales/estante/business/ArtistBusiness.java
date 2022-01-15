@@ -21,7 +21,7 @@ public class ArtistBusiness {
     private static final Logger LOG = Logger.getLogger(ArtistBusiness.class);
 
     public List<Artist> listAllArtists() {
-        LOG.info("[listAll] pesquisando a lista de total de artistas");
+        LOG.info("[listAllArtists] pesquisando a lista de total de artistas");
         return Artist.listAll();
     }
 
