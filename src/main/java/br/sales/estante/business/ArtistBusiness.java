@@ -40,7 +40,6 @@ public class ArtistBusiness {
     @Transactional
     public Artist create(ArtistRequest artistRequest) {
         LOG.info("[create] montando objeto Artist");
-
         validateArtistRequest(artistRequest);
 
         var artist = Artist.builder()
@@ -55,7 +54,6 @@ public class ArtistBusiness {
     @Transactional
     public Artist update(Long id, ArtistRequest artistRequest) {
         LOG.info("[update] pesquisando artista");
-
         validateArtistRequest(artistRequest);
 
         var artist = getById(id);
@@ -81,10 +79,11 @@ public class ArtistBusiness {
     }
 
     private void validateArtistRequest(ArtistRequest artistRequest) {
+        LOG.info("[validateArtistRequest] validando objeto artista");
         if (artistRequest == null) {
             throw new BadRequestException("Parâmetro de artista está inválido");
         }
-
+        LOG.info("[validateArtistRequest] validando nome do artista");
         if (artistRequest.getName() == null || artistRequest.getName().trim().isEmpty()) {
             throw new BadRequestException("O nome está nulo ou vazio");
         }
