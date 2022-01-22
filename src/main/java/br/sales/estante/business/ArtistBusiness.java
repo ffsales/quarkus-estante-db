@@ -32,6 +32,9 @@ public class ArtistBusiness {
 
     @Transactional
     public Artist create(ArtistRequest artistRequest) {
+
+        validateArtistRequest(artistRequest);
+
         var artist = Artist.builder()
                 .name(artistRequest.getName())
                 .date(LocalDate.now())
@@ -43,6 +46,9 @@ public class ArtistBusiness {
 
     @Transactional
     public Artist update(Long id, ArtistRequest artistRequest) {
+
+        validateArtistRequest(artistRequest);
+
         var artist = getById(id);
         artist.setName(artistRequest.getName());
         artist.setDate(LocalDate.now());
@@ -58,5 +64,15 @@ public class ArtistBusiness {
             throw new WebApplicationException("Artista cadastrado em livro em uso.", Response.Status.CONFLICT);
         }
         artist.delete();
+    }
+
+    private void validateArtistRequest(ArtistRequest artistRequest) {
+        if (artistRequest == null) {
+            throw new BadRequestException("Parâmetro de artista está inválido");
+        }
+
+        if (artistRequest.getName() == null || artistRequest.getName().trim().isEmpty()) {
+            throw new BadRequestException("O nome está nulo ou vazio");
+        }
     }
 }
