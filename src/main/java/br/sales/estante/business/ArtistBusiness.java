@@ -8,6 +8,7 @@ import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -39,6 +40,8 @@ public class ArtistBusiness {
     @Transactional
     public Artist create(ArtistRequest artistRequest) {
         LOG.info("[create] montando objeto Artist");
+        validateArtistRequest(artistRequest);
+
         var artist = Artist.builder()
                 .name(artistRequest.getName())
                 .date(LocalDate.now())
@@ -51,6 +54,8 @@ public class ArtistBusiness {
     @Transactional
     public Artist update(Long id, ArtistRequest artistRequest) {
         LOG.info("[update] pesquisando artista");
+        validateArtistRequest(artistRequest);
+
         var artist = getById(id);
         artist.setName(artistRequest.getName());
         artist.setDate(LocalDate.now());
@@ -71,5 +76,16 @@ public class ArtistBusiness {
         }
         LOG.info("[delete] deletando artista");
         artist.delete();
+    }
+
+    private void validateArtistRequest(ArtistRequest artistRequest) {
+        LOG.info("[validateArtistRequest] validando objeto artista");
+        if (artistRequest == null) {
+            throw new BadRequestException("Parâmetro de artista está inválido");
+        }
+        LOG.info("[validateArtistRequest] validando nome do artista");
+        if (artistRequest.getName() == null || artistRequest.getName().trim().isEmpty()) {
+            throw new BadRequestException("O nome está nulo ou vazio");
+        }
     }
 }
