@@ -1,6 +1,8 @@
 package br.sales.estante.business;
 
 import br.sales.estante.dto.ArtistRequest;
+import br.sales.estante.model.ArtistRole;
+import br.sales.estante.model.ArtistType;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
 import java.time.LocalDate;
 
 @QuarkusTest
@@ -85,4 +88,28 @@ public class ArtistsBusinessTest {
         Assertions.assertEquals("Artista não encontrado", notFoundException.getMessage());
     }
 
+    @Test
+    public void shouldDeleteWithConflict() {
+        var artistRequest = new ArtistRequest();
+        artistRequest.setName("Novo artista");
+        var artistPersist = artistBusiness.create(artistRequest);
+
+        var artistRole = new ArtistRole();
+        artistRole.setArtist(artistPersist);
+        artistRole.setType(ArtistType.WRITER_ARTIST);
+        artistRole.setDate(LocalDate.now());
+        artistRole.persist();
+
+        WebApplicationException webApplicationException = Assertions.assertThrows(WebApplicationException.class,
+                                                                        () -> artistBusiness.delete(artistPersist.id));
+        Assertions.assertEquals("Artista cadastrado em livro em uso.", webApplicationException.getMessage());
+        Assertions.assertEquals(409, webApplicationException.getResponse().getStatus());
+    }
+
+    @Test
+    public void shouldDeleteWithNotFound() {
+        NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class,
+                () -> artistBusiness.delete(1L));
+        Assertions.assertEquals("Artista não encontrado", notFoundException.getMessage());
+    }
 }
