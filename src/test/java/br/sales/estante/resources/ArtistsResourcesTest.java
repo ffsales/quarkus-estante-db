@@ -13,17 +13,20 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 
 import static io.restassured.RestAssured.given;
 import static org.mockito.ArgumentMatchers.any;
 
 @QuarkusTest
-@TestTransaction
 public class ArtistsResourcesTest {
 
     @InjectMock
     ArtistBusiness artistBusiness;
+
+    private static final long ONE_LONG = 1L;
 
     @Test
     public void shouldCreateArtistWithCreateReturn() {
@@ -92,7 +95,7 @@ public class ArtistsResourcesTest {
 
     @Test
     public void shouldGetArtistWithSucess() {
-        Mockito.when(artistBusiness.getById(any())).thenReturn(mockArtist());
+        Mockito.when(artistBusiness.getById(ONE_LONG)).thenReturn(mockArtist());
         given()
                 .when()
                 .spec(new RequestSpecBuilder().build())
@@ -105,7 +108,7 @@ public class ArtistsResourcesTest {
 
     @Test
     public void shouldGetArtistWithNotFoundReturn() {
-        Mockito.when(artistBusiness.getById(any())).thenThrow(new NotFoundException());
+        Mockito.when(artistBusiness.getById(ONE_LONG)).thenThrow(new NotFoundException());
         given()
                 .when()
                 .spec(new RequestSpecBuilder().build())
@@ -114,6 +117,45 @@ public class ArtistsResourcesTest {
                 .get("/v1/artists/1")
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void shouldDeleteArtistWithSucess() {
+        Mockito.doNothing().when(artistBusiness).delete(ONE_LONG);
+        given()
+                .when()
+                .spec(new RequestSpecBuilder().build())
+                .contentType(ContentType.JSON)
+                .body(new ArtistRequest())
+                .delete("/v1/artists/1")
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    public void shouldDeleteArtistWithNotFoundReturn() {
+        Mockito.doThrow(new NotFoundException()).when(artistBusiness).delete(ONE_LONG);
+        given()
+                .when()
+                .spec(new RequestSpecBuilder().build())
+                .contentType(ContentType.JSON)
+                .body(new ArtistRequest())
+                .delete("/v1/artists/1")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void shouldDeleteArtistWithWebApplicationErrorReturn() {
+        Mockito.doThrow(new WebApplicationException("Artista cadastrado em livro em uso.", Response.Status.CONFLICT)).when(artistBusiness).delete(ONE_LONG);
+        given()
+                .when()
+                .spec(new RequestSpecBuilder().build())
+                .contentType(ContentType.JSON)
+                .body(new ArtistRequest())
+                .delete("/v1/artists/1")
+                .then()
+                .statusCode(409);
     }
 
     private Artist mockArtist() {
