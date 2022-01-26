@@ -1,0 +1,359 @@
+{
+	"info": {
+		"_postman_id": "e8e2b8f5-8fed-463d-916c-99d26c0be422",
+		"name": "ESTANTE-DB",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ARTISTS",
+			"item": [
+				{
+					"name": "GET Artist By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/artists/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"artists",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LIST ALL Artist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/artists/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"artists",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADD Artists",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Alan Moore\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/artists/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"artists",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE Artists",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Alan Moooooore\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/artists/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"artists",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELTE Artists",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/artists/103",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"artists",
+								"103"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "BOOK",
+			"item": [
+				{
+					"name": "GET Book By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/books/83",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"books",
+								"83"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LIST ALL Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/books",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADD Book",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Whatchman\",\n    \"genre\": \"ADVENTURE\",\n    \"type\": \"COMIC\",\n    \"original_publisher_id\": 23,\n    \"lincencing_publisher_id\": 28,\n    \"artist_list\": [\n        {\n            \"artist_id\": 90,\n            \"artist_type\": \"WRITER\"\n        },\n        {\n            \"artist_id\": 89,\n            \"artist_type\": \"PENCILER\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/books",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE Book",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Solitário\",\n    \"genre\": \"DRAMA\",\n    \"type\": \"COMIC\",\n    \"original_publisher_id\": 26,\n    \"lincencing_publisher_id\": 27,\n    \"artist_list\": [\n        {\n            \"artist_id\": 31,\n            \"artist_type\": \"WRITER_ARTIST\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/books/83",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"books",
+								"83"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/books/94",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"books",
+								"94"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUBLISHER",
+			"item": [
+				{
+					"name": "ADD Publisher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Skript\",\n    \"country\": \"BRAZIL\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/publisher",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"publisher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Publisher By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/publisher/102",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"publisher",
+								"102"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All Publishers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/publisher",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"publisher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Publisher",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": null,\n    \"country\": \"BRAZIL\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/publisher/15",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"publisher",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Publisher",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/publisher/103",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"publisher",
+								"103"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
