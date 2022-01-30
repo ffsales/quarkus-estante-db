@@ -11,10 +11,10 @@ A POC simula um cadastro de livros em uma coleção utilizando entidades como Bo
 Quarkus é um framework Java nativo em Kubernetes e de stack completo que foi desenvolvido para máquinas virtuais Java (JVMs) e compilação nativa.
 
 - ### Postgres
-Banco de dados relacional
+Banco de dados relacional para persistência de dados
 
 - ### Panache
-Implementação do JPA para Quarkus
+Implementação do JPA para Quarkus para conectar as tabelas ao banco de dados
 
 - ### JUnit
 Framework de testes
@@ -33,7 +33,9 @@ docker container run -d --name postgres-estante -p 5432:5432 -e POSTGRES_PASSWOR
 ```
 Pode utilizar qualquer aplicação de acesso a banco de dados para testar a sua conexão, como o DBeaver.
 
-No projeto executar o comando `./mvnw compile quarkus:dev` para iniciar o projeto
+No projeto executar o comando `./mvnw compile quarkus:dev` para iniciar o projeto.
+
+O projeto está configurado para executar na porta `8082`, para alterar a porta é necessário alterar a propriedade `quarkus.http.port` no arquivo `src/main/resources/applilcation.properties
 
 ##Usando a aplicação
 
