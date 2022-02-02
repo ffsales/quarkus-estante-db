@@ -1,60 +1,42 @@
-# quarkus-estante-db Project
+# Projeto quarkus-estante-db
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## Projeto
+O objetivo desta POC é exemplificar uma aplicação que expõe endpoints REST para a execução de CRUD utilizando Quarkus.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+A POC simula um cadastro de livros em uma coleção utilizando entidades como Book (livro), Artist (artista), ArtistRole (função do artista) e Publisher (editora) para descrever as principais características de um livro. 
 
-## Running the application in dev mode
+## Tecnologias
 
-You can run your application in dev mode that enables live coding using:
+- ### Quarkus
+Quarkus é um framework Java nativo em Kubernetes e de stack completo que foi desenvolvido para máquinas virtuais Java (JVMs) e compilação nativa.
+
+- ### Postgres
+Banco de dados relacional para persistência de dados
+
+- ### Panache
+Implementação do JPA para Quarkus para conectar as tabelas ao banco de dados
+
+- ### JUnit
+Framework de testes
+
+- ### MDC
+Framework que injeto informações para serem logadas em qualquer momento da aplicação
+
+- ### Docker
+Utilizado para subir um container com Postgres
+
+## Executando a aplicação
+
+Para executar a aplicação é necessario excutar um container docker para subir o banco de dados Postgres com o comando abaixo
 ```shell script
-./mvnw compile quarkus:dev
+docker container run -d --name postgres-estante -p 5432:5432 -e POSTGRES_PASSWORD=estante_password -e POSTGRES_USER=estante -e POSTGRES_DB=estante postgres
 ```
+Pode utilizar qualquer aplicação de acesso a banco de dados para testar a sua conexão, como o DBeaver.
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+No projeto executar o comando `./mvnw compile quarkus:dev` para iniciar o projeto.
 
-## Packaging and running the application
+O projeto está configurado para executar na porta `8082`, para alterar a porta é necessário alterar a propriedade `quarkus.http.port` no arquivo `src/main/resources/applilcation.properties
 
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+##Usando a aplicação
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/quarkus-estante-db-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- RESTEasy JAX-RS ([guide](https://quarkus.io/guides/rest-json)): REST endpoint framework implementing JAX-RS and more
-
-## Provided Code
-
-### RESTEasy JAX-RS
-
-Easily start your RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+Para testar a aplicação existe uma collection do Postman no projeto que pode ser utilizada. Nela tem chamadas para todos os endpoints da aplicãção
